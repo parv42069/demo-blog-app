@@ -7,6 +7,9 @@ const PostSchema = new mongoose.Schema({
   content: {
     type: String,
   },
+  genre: {
+    type: String,
+  },
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Author',

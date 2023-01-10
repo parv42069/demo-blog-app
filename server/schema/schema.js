@@ -15,6 +15,7 @@ const PostType = new GraphQLObjectType({
   fields: () => ({
     id: { type: GraphQLID },
     title: { type: GraphQLString },
+    genre: { type: GraphQLString },
     content: { type: GraphQLString },
     author: {
       type: AuthorType,
@@ -63,6 +64,13 @@ const RootQuery = new GraphQLObjectType({
         return Author.findById(args.id);
       },
     },
+    authorByEmail: {
+      type: AuthorType,
+      args: { email: { type: GraphQLString } },
+      resolve(parent, args) {
+        return Author.findOne({ email: args.email });
+      },
+    },
   },
 });
 
@@ -97,12 +105,14 @@ const mutation = new GraphQLObjectType({
       args: {
         title: { type: GraphQLNonNull(GraphQLString) },
         content: { type: GraphQLNonNull(GraphQLString) },
+        genre: { type: GraphQLNonNull(GraphQLString) },
         authorId: { type: GraphQLNonNull(GraphQLID) },
       },
       resolve(parent, args) {
         const post = new Post({
           title: args.title,
           content: args.content,
+          genre: args.genre,
           authorId: args.authorId,
         });
         return post.save();
@@ -122,6 +132,7 @@ const mutation = new GraphQLObjectType({
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
         title: { type: GraphQLString },
+        genre: { type: GraphQLString },
         content: { type: GraphQLNonNull(GraphQLString) },
       },
       resolve(parent, args) {
@@ -131,6 +142,7 @@ const mutation = new GraphQLObjectType({
             $set: {
               title: args.title,
               content: args.content,
+              genre: args.genre,
             },
           },
           { new: true }
